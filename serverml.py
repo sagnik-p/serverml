@@ -71,7 +71,7 @@ app = FastAPI()
 
 @app.get("/getProductWithMaxProfit")
 def api1(merchantId : str):
-    modified_json_objects = remove_key_value_pairs(get_json_data("http://localhost:3000/api/sales/all_sales")
+    modified_json_objects = remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/sales/all_sales")
 , ["_id","date_sold"])
     print(modified_json_objects)
     print(merchantId)
@@ -81,13 +81,13 @@ def api1(merchantId : str):
         'analyse the given data and tell me which product made the maximum profit for merchant with merchant id ',str(merchantId),'    ', str(modified_json_objects), ' Just send the product id only'
     ]
     pnumber=model.generate_content(prompt_parts).text
-    return find_json_object_by_product_id(remove_key_value_pairs(get_json_data("http://localhost:3000/api/product/getAllProducts")
+    return find_json_object_by_product_id(remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/product/getAllProducts")
 , ["_id","image"]),pnumber)
 
 
 @app.get("/topProductsSold")
 def api2():
-    modified_json_objects = remove_key_value_pairs(get_json_data("http://localhost:3000/api/sales/all_sales")
+    modified_json_objects = remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/sales/all_sales")
                                                    , ["_id", "date_sold","selling_price_per_unit","total_selling_price","merchant_id"])
     prompt_parts = [
         'analyse the data about product id and number sold, given below, and tell the the top 3 products which have sold the most', str(modified_json_objects), ' Just send the product id and the total number sold, for the top 3 selling product, in a numbered list format which is easy to read'
@@ -96,7 +96,7 @@ def api2():
 
 @app.get("/topProductForMaxProfit")
 def api3():
-    modified_json_objects = remove_key_value_pairs(get_json_data("http://localhost:3000/api/sales/all_sales")
+    modified_json_objects = remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/sales/all_sales")
                                                    , ["_id", "date_sold","merchant_id"])
     prompt_parts = [
         'analyse the data about products sold, given below, and tell me the top 3 products which maximum combined selling price', str(modified_json_objects), ' Just send the product id and total selling price for that product, in a numbered list format and easy to read, top 3 only'
@@ -105,7 +105,7 @@ def api3():
 
 @app.get("/getBestSuppliers")
 def api4(productId : str):
-    modified_json_objects = remove_key_value_pairs(get_json_data("http://localhost:3000/api/suppliers/:0")
+    modified_json_objects = remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/suppliers/:0")
 , ["_id","shop_name","email","phone","address","product_prices"])
     print(modified_json_objects)
     prompt_parts = [
@@ -115,14 +115,14 @@ def api4(productId : str):
 
 @app.get("/getRisks")
 def api5(merchantId: str):
-    modified_suppliers = remove_key_value_pairs(get_json_data("http://localhost:3000/api/suppliers/:0")
+    modified_suppliers = remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/suppliers/:0")
 , ["_id","shop_name","email","phone","address","product_prices"])
     print(modified_suppliers)
 
-    modified_purchases= remove_key_value_pairs(get_json_data("http://localhost:3000/api/purchase/all_purchases")
+    modified_purchases= remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/purchase/all_purchases")
                                                 , ["_id"])
     print(modified_purchases)
-    modified_sales_info = remove_key_value_pairs(get_json_data("http://localhost:3000/api/sales/all_sales")
+    modified_sales_info = remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/sales/all_sales")
                                                    , ["_id", "date_sold"])
     modified_sales_info = filter_by_merchant_id(modified_sales_info, merchantId)
 
@@ -133,12 +133,12 @@ def api5(merchantId: str):
 
 @app.get("/getOptimization")
 def api6(merchantId: str):
-    modified_suppliers = remove_key_value_pairs(get_json_data("http://localhost:3000/api/suppliers/:0")
+    modified_suppliers = remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.comapi/suppliers/:0")
 , ["_id","shop_name","email","phone","address","product_prices"])
     print(modified_suppliers)
-    modified_purchases= remove_key_value_pairs(get_json_data("http://localhost:3000/api/purchase/all_purchases"), ["_id"])
+    modified_purchases= remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/purchase/all_purchases"), ["_id"])
     print(modified_purchases)
-    modified_sales_info = remove_key_value_pairs(get_json_data("http://localhost:3000/api/sales/all_sales"), ["_id", "date_sold"])
+    modified_sales_info = remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/sales/all_sales"), ["_id", "date_sold"])
     modified_sales_info = filter_by_merchant_id(modified_sales_info, merchantId)
     print(modified_sales_info)
     prompt_parts = [
