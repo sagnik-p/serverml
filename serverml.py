@@ -67,11 +67,16 @@ def api1(merchantId : str):
     modified_json_objects = remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/sales/all_sales")
 , ["_id","date_sold"])
     print(modified_json_objects)
-    print(merchantId)
-    modified_json_objects=filter_by_merchant_id(modified_json_objects,merchantId)
-    print(modified_json_objects)
+
+    modified_json_purchases = remove_key_value_pairs(
+        get_json_data("https://bizminds-backend.onrender.com/api/purchase/all_purchases")
+        , ["_id", "date_purchased","total_cost_price","units_purchased","supplier_id"])
+    print(modified_json_purchases)
+    modified_json_objects = filter_by_merchant_id(modified_json_objects, merchantId)
+    modified_json_purchases=filter_by_merchant_id(modified_json_purchases,merchantId)
+
     prompt_parts = [
-        'analyse the given data and tell me which product made the maximum profit for merchant with merchant id ',str(merchantId),'    ', str(modified_json_objects), ' Just send the product id only'
+        'analyse the given data and tell me which product made the maximum profit for merchant with merchant id ',str(merchantId),'   Data of Merchant Sales: ', str(modified_json_objects), 'Data of Merchant purchases from supplier: ',str(modified_json_purchases),' Just send product id, product name, and max profit earned per sale '
     ]
     pnumber=model.generate_content(prompt_parts).text
     return find_json_object_by_product_id(remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/product/getAllProducts")
