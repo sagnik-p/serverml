@@ -62,26 +62,19 @@ def find_json_object_by_product_id(json_list, target_product_id):
 
 app = FastAPI()
 
+
 @app.get("/getProductWithMaxProfit")
 def api1(merchantId : str):
     modified_json_objects = remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/sales/all_sales"), ["_id","date_sold"])
     modified_json_purchases = remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/purchase/all_purchases"), ["_id", "date_purchased","total_cost_price","units_purchased","supplier_id"])
     modified_json_objects = filter_by_merchant_id(modified_json_objects, merchantId)
     modified_json_purchases=filter_by_merchant_id(modified_json_purchases,merchantId)
-    print(modified_json_purchases)
     print(modified_json_objects)
-
+    print("purchases")
+    print(modified_json_purchases)
+    products=remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/product/getAllProducts"), ["_id","image"])
     prompt_parts = [
-        'analyse the given data and tell me which product made the maximum profit for merchant with merchant id ',str(merchantId),'   Data of Merchant Sales: ', str(modified_json_objects), ' Just send product id and selling price only, separated by a comma'
-    ]
-    model.generate_content(prompt_parts).text
-    reply_list=model.generate_content(prompt_parts).text.split(',')
-    pnumber=reply_list[0]
-    sp=reply_list[1]
-
-    pdt_list=remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/product/getAllProducts"), ["_id", "image"])
-    prompt_parts = [
-        'This is the product purchases for that particular merchant :',str(modified_json_purchases),'.      Find how much profit is earned by selling product with product_id ',str(pnumber),' if the selling price per unit is ',str(sp),'. Data of the products are: ',str(pdt_list),'. Return the product name, product id, cost price, selling price and profit per unit sold only, in a list form.'
+        'analyse the given data and tell me which product made the maximum profit for merchant with merchant id ',str(merchantId),'   Data of sales of that particular merchant: ', str(modified_json_objects), 'Data of purchases from supplier of that particular merchant :',str(modified_json_purchases),'Data of all products : ',str(products),'     Just send product name, product id and profit per unit sold, of the pdt with max profit only'
     ]
     return model.generate_content(prompt_parts).text
 
