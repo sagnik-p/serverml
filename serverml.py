@@ -1,10 +1,19 @@
 import json
-
 import requests
 from fastapi import FastAPI
 import string
 import google.generativeai as genai
+from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI()
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 genai.configure(api_key="AIzaSyB2ScnzfxTtt0bXWvNOsSMJ5pTwPyUZ2D8")
 generation_config = {
   "temperature": 0,
@@ -67,7 +76,7 @@ def find_json_object_by_product_id(json_list, target_product_id):
             return json_obj
     return None
 
-app = FastAPI()
+
 
 
 @app.get("/getProductWithMaxProfit")
