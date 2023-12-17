@@ -1,5 +1,8 @@
+import json
+
 import requests
 from fastapi import FastAPI
+import string
 import google.generativeai as genai
 
 genai.configure(api_key="AIzaSyB2ScnzfxTtt0bXWvNOsSMJ5pTwPyUZ2D8")
@@ -159,6 +162,23 @@ def api8(productId: str):
         'analyse the data and determine which supplier sells product with product id ',str(productId),' at the cheapest price. Data is sprted according to delivery speed, data :',str(modified_suppliers),'    Return the top 3 cheapest suppliers for that particular product, and their prices along with the supplier id and supplier name, who sells it'
     ]
     return model.generate_content(prompt_parts).text
+@app.get("/monthwiseProfit")
+def api8(merchantId: str):
+    sp = get_json_data("https://bizminds-backend.onrender.com/api/sales/"+str(merchantId)+"/12months_sales")
+    cp = get_json_data("https://bizminds-backend.onrender.com/api/purchase/monthwise/"+str(merchantId))
+    print(sp)
+    print(cp)
+    prompt_parts = [
+        "The monthwise cost price data is :"+str(cp)+" and the monthwise selling price data is : "+ str(sp)+" Analyse the given data and find out the monthly profit. Return the data as a python dictionary where the keys are the months January to December and the values are the profits. Give the values, dont give code"
+    ]
+    l=[]
+    x= str(model.generate_content(prompt_parts).text)
+    y = x[(x.index('{')):(x.index('}')+1)]
+    print(y)
+    json_data=json.loads(y)
+    for value in json_data.values():
+        l.append(int(value))
+    return l
 
 @app.get("/getLowStocks")
 def api8(merchantId: str):
