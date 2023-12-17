@@ -53,7 +53,11 @@ def remove_key_value_pairs(json_list, keys_to_remove):
 def filter_by_merchant_id(json_list, target_merchant_id):
     filtered_list = [json_obj for json_obj in json_list if json_obj.get("merchant_id") == target_merchant_id]
     return filtered_list
-
+def getProductName(pid):
+    products=remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/product/getAllProducts"), ["_id","image"])
+    for pdts in products:
+        if(pdts.get("product_id")==pid):
+            return str(pdts.get('name'))
 def find_json_object_by_product_id(json_list, target_product_id):
     for json_obj in json_list:
         if json_obj.get("product_id") == target_product_id:
@@ -155,3 +159,20 @@ def api8(productId: str):
         'analyse the data and determine which supplier sells product with product id ',str(productId),' at the cheapest price. Data is sprted according to delivery speed, data :',str(modified_suppliers),'    Return the top 3 cheapest suppliers for that particular product, and their prices along with the supplier id and supplier name, who sells it'
     ]
     return model.generate_content(prompt_parts).text
+
+@app.get("/getLowStocks")
+def api8(merchantId: str):
+    inventory_data = remove_key_value_pairs(get_json_data("https://bizminds-backend.onrender.com/api/stocks/inventory/"+merchantId),["_id"])
+    print(inventory_data)
+    ans=""
+    for json_obj in inventory_data:
+        for i in range(0,len(json_obj.get('products'))):
+            if(json_obj.get('quantity')[i] <=50):
+                ans+=json_obj.get('products')[i]
+                #ans+=","
+                #ans+= getProductName(json_obj.get('products')[i])
+                ans+=" , quantity is : "
+                ans+= str(json_obj.get('quantity')[i])+"\n"
+    if(ans==''):
+        return "After analysis, no items were found for merchant" + str(merchantId) + "with quantity less than 50 "
+    return "After analysis of Inventory, Items found with low quantity in stock:  \n "+ ans + "\n Merchant "+str(merchantId)+" is advised to purchase these items as soon as possible"
