@@ -14,7 +14,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-genai.configure(api_key="AIzaSyB2ScnzfxTtt0bXWvNOsSMJ5pTwPyUZ2D8")
+genai.configure(api_key="APIKEY")
 generation_config = {
   "temperature": 0,
   "top_p": 1,
